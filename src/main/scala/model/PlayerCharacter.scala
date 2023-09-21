@@ -30,22 +30,40 @@ import scala.util.Random
   * @param evasion The player's skill to completely avoid certain attacks.
   * @param randomNumberGenerator A utility to generate random numbers. Defaults to a new `Random`
   *                              instance.
+ * @param norma Norma del jugador (nivel).
+ * @param wins The amount of wins
+ * @param isKO Whether if the player is KO
+ * @param inRecovery Whether if the player is in recovery state
+ * @param objectiveChosen Objective chosen by the character
+ * @param skipHomePanel Whether if the player skips their home panel
   *
   * @author [[https://github.com/danielRamirezL/ Daniel Ramírez L.]]
   * @author [[https://github.com/joelriquelme/ Joel Riquelme P.]]
   * @author [[https://github.com/r8vnhill/ Ignacio Slater M.]]
   * @author [[https://github.com/Seivier/ Vicente González B.]]
-  * @author [[https://github.com/~Your github account~/ ~Your Name~]]
+  * @author [[https://github.com/maxfloresv/ Máximo Flores Valenzuela]]
   */
 class PlayerCharacter(val name: String,
               val maxHp: Int,
               val attack: Int,
               val defense: Int,
               val evasion: Int,
-              val randomNumberGenerator: Random = new Random()) {
+              val randomNumberGenerator: Random = new Random(),
+                      var norma: Int,
+                      var stars: Int,
+                      var wins: Int,
+                      var isKO: Boolean,
+                      var inRecovery: Boolean,
+                      var objectiveChosen: String,
+                      var skipHomePanel: Boolean) {
 
   /** Rolls a dice and returns a value between 1 to 6. */
   def rollDice(): Int = {
     randomNumberGenerator.nextInt(6) + 1
+  }
+
+  /** Update the wins of the character */
+  def updateWins(n: Int): Unit = {
+
   }
 }
