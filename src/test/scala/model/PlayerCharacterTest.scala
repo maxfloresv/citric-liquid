@@ -1,6 +1,8 @@
 package cl.uchile.dcc.citric
 package model
 
+import cl.uchile.dcc.citric.model.entity.PlayerCharacter
+
 import scala.util.Random
 
 class PlayerCharacterTest extends munit.FunSuite {

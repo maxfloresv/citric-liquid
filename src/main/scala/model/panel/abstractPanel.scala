@@ -1,13 +1,18 @@
 package cl.uchile.dcc.citric
-package model
+package model.panel
 
-/** Represents a specific single cell on a board, known as a Panel.
+import model.entity.PlayerCharacter
+
+import scala.collection.mutable.ArrayBuffer
+
+/** Represents a single cell on a board, known as a Panel.
  *
- * This panel take stars from the player when they fall
+ * It has implementations and initial values that Panels share.
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class DropPanel extends Panel {
+abstract class abstractPanel extends Panel {
+  // Initially, we don't have neither characters nor nextPanels.
   val characters: ArrayBuffer[PlayerCharacter] = ArrayBuffer[PlayerCharacter]()
   var nextPanels: ArrayBuffer[Panel] = ArrayBuffer[Panel]()
 
@@ -17,21 +22,11 @@ class DropPanel extends Panel {
       if (characters(i) == player)
         return
     }
-    // We only add players if they not exist.
+    // We only add players if they don't exist.
     characters += player
   }
 
   def removeCharacter(player: PlayerCharacter): Unit = {
     characters -= player
-  }
-
-  /** Update the stars of a character given that they fell into a
-   * Drop Panel.
-   *
-   * @param character The character involved
-   */
-  def takeStars(character: PlayerCharacter): Unit = {
-    val roll: Int = character.rollDice()
-    character.stars -= roll * character.norma
   }
 }

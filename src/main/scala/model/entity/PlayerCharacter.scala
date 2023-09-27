@@ -1,5 +1,7 @@
 package cl.uchile.dcc.citric
-package model
+package model.entity
+
+import cl.uchile.dcc.citric.model.panel.Panel
 
 import scala.util.Random
 
@@ -30,12 +32,6 @@ import scala.util.Random
   * @param evasion The player's skill to completely avoid certain attacks.
   * @param randomNumberGenerator A utility to generate random numbers. Defaults to a new `Random`
   *                              instance.
- * @param norma Norma del jugador (nivel).
- * @param wins The amount of wins
- * @param isKO Whether if the player is KO
- * @param inRecovery Whether if the player is in recovery state
- * @param objectiveChosen Objective chosen by the character
- * @param skipHomePanel Whether if the player skips their home panel
   *
   * @author [[https://github.com/danielRamirezL/ Daniel Ramírez L.]]
   * @author [[https://github.com/joelriquelme/ Joel Riquelme P.]]
@@ -48,22 +44,52 @@ class PlayerCharacter(val name: String,
               val attack: Int,
               val defense: Int,
               val evasion: Int,
-              val randomNumberGenerator: Random = new Random(),
-                      var norma: Int,
-                      var stars: Int,
-                      var wins: Int,
-                      var isKO: Boolean,
-                      var inRecovery: Boolean,
-                      var objectiveChosen: String,
-                      var skipHomePanel: Boolean) {
+              val randomNumberGenerator: Random = new Random()) extends Entity {
 
   /** Rolls a dice and returns a value between 1 to 6. */
   def rollDice(): Int = {
     randomNumberGenerator.nextInt(6) + 1
   }
 
+  /** Initial norma for every PlayerCharacter is 1 */
+  var norma: Int = 1
+
+  /** Either stars and wins are 0 by default */
+  var stars: Int = 0
+  var wins: Int = 0
+
+  /** Initially, the player can't be KO nor in recovery state  */
+  var isKO: Boolean = false
+  var inRecovery: Boolean = false
+
+  /**
+   * Objective can be either 'V' or 'S' which stands for victories
+   * and stars respectively.
+   */
+  var objectiveChosen: Char = null
+
+  var skipHomePanel: Boolean = false
+
+  /** ATK, DEF and EVA points are unknown at this point */
+  val atkPoints = 0
+  val defPoints = 0
+  val evaPoints = 0
+
+  val maxHitPoints: Int = maxHp
+  var currentHitPoints: Int = maxHitPoints
+
+  /** PlayerCharacter are always controllable */
+  val controllable: Boolean = true
+
+  /** Initial Panel is unknown */
+  var currentPanel: Panel = null
+
+  /** Initially, players aren't in combat. They
+   * enter in combat iff they run into a Encounter Panel */
+  var inCombat: Boolean = false
+
   /** Update the wins of the character */
   def updateWins(n: Int): Unit = {
-
+    wins += n
   }
 }
