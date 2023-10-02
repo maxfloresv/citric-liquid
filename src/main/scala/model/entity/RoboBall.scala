@@ -8,7 +8,7 @@ package model.entity
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 class RoboBall extends abstractWildUnit {
-  val atkPoints: Int = -1;
-  val defPoints: Int = 1;
-  val evaPoints: Int = -1;
+  val atkPoints: Int = -1
+  val defPoints: Int = 1
+  val evaPoints: Int = -1
 }

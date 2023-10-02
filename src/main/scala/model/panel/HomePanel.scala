@@ -15,13 +15,19 @@ import model.entity.PlayerCharacter
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class HomePanel extends abstractPanel {
+class HomePanel extends AbstractPanel {
   /** Owner of this HomePanel.
    *
    * Every HomePanel has an owner to differentiate actions
    * when players fall in these panels. Initially, the owner is unknown
    */
-  val owner: PlayerCharacter = null
+  private val owner: PlayerCharacter = null // TODO: Determine panel owner.
+
+  /** Retrieves who owns this Home Panel.
+   *
+   * @return Owner of this Home Panel.
+   */
+  def getOwner: PlayerCharacter = owner
 
   /** Gives HP to the current entity in this panel.
    *
@@ -29,8 +35,8 @@ class HomePanel extends abstractPanel {
    *
    * @param entity The player character to remove from this panel.
    */
-  def giveHp(entity: PlayerCharacter, n: Int): Unit = {
-    entity.currentHitPoints += n
+  private def giveHp(entity: PlayerCharacter, n: Int): Unit = {
+    entity.setCurrentHitPoints(entity.getCurrentHitPoints + n)
   }
 
   /** Checks if a player meets Norma level-up requirements.
@@ -39,35 +45,37 @@ class HomePanel extends abstractPanel {
    *
    * @param character The player character to remove from this panel.
    */
-  def normaCheck(character: PlayerCharacter): Boolean = {
-    val norma = character.norma
-    val objectiveChosen = character.objectiveChosen
+  private def normaCheck(character: PlayerCharacter): Boolean = {
+    val norma = character.getNorma
+    val objectiveChosen = character.getObjective
+    val wins = character.getWins
+    val stars = character.getStars
 
     if (norma == 2) {
       if (objectiveChosen == 'V')
-        character.wins >= 1
+        wins >= 1
       else
-        character.stars >= 10
+        stars >= 10
     } else if (norma == 3) {
       if (objectiveChosen == 'V')
-        character.wins >= 3
+        wins >= 3
       else
-        character.stars >= 30
+        stars >= 30
     } else if (norma == 4) {
       if (objectiveChosen == 'V')
-        character.wins >= 6
+        wins >= 6
       else
-        character.stars >= 70
+        stars >= 70
     } else if (norma == 5) {
       if (objectiveChosen == 'V')
-        character.wins >= 10
+        wins >= 10
       else
-        character.stars >= 120
+        stars >= 120
     } else if (norma == 6) {
       if (objectiveChosen == 'V')
-        character.wins >= 14
+        wins >= 14
       else
-        character.stars >= 200
+        stars >= 200
     } else {
       // Player's norma can't be greater than 6
       throw new Exception("Norma can't be greater than 6")
@@ -81,7 +89,7 @@ class HomePanel extends abstractPanel {
    *
    * @param character The player character to remove from this panel.
    */
-  def updateNorma(character: PlayerCharacter): Unit = {
-    character.norma += 1
+  private def updateNorma(character: PlayerCharacter): Unit = {
+    character.setNorma(character.getNorma + 1)
   }
 }

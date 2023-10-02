@@ -11,12 +11,12 @@ import scala.collection.mutable.ArrayBuffer
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-abstract class abstractPanel extends Panel {
-  // Initially, we don't have neither characters nor nextPanels.
-  val characters: ArrayBuffer[PlayerCharacter] = ArrayBuffer[PlayerCharacter]()
-  var nextPanels: ArrayBuffer[Panel] = ArrayBuffer[Panel]()
+abstract class AbstractPanel extends Panel {
+  /** Initially, we don't have neither characters nor nextPanels. */
+  protected val characters: ArrayBuffer[PlayerCharacter] = ArrayBuffer[PlayerCharacter]()
+  protected var nextPanels: ArrayBuffer[Panel] = ArrayBuffer[Panel]()
 
-  def addCharacter(player: PlayerCharacter): Unit = {
+  protected def addCharacter(player: PlayerCharacter): Unit = {
     val listSize: Int = characters.size - 1
     for (i <- 0 to listSize) {
       if (characters(i) == player)
@@ -26,7 +26,7 @@ abstract class abstractPanel extends Panel {
     characters += player
   }
 
-  def removeCharacter(player: PlayerCharacter): Unit = {
+  protected def removeCharacter(player: PlayerCharacter): Unit = {
     characters -= player
   }
 }

@@ -7,4 +7,4 @@ package model.panel
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class NeutralPanel extends abstractPanel {}
+class NeutralPanel extends AbstractPanel {}

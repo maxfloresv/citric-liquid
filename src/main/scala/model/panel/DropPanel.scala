@@ -9,14 +9,15 @@ import model.entity.PlayerCharacter
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class DropPanel extends abstractPanel {
+class DropPanel extends AbstractPanel {
   /** Update the stars of a character given that they fell into a
    * Drop Panel. It takes roll * Norma from player's stars.
    *
    * @param character The character involved
    */
-  def takeStars(character: PlayerCharacter): Unit = {
+  private def takeStars(character: PlayerCharacter): Unit = {
     val roll: Int = character.rollDice()
-    character.stars -= roll * character.norma
+    val taken = roll * character.getNorma
+    character.setStars(character.getStars - taken)
   }
 }

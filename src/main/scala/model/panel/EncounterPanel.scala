@@ -9,7 +9,7 @@ import model.entity.Entity
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class EncounterPanel extends abstractPanel {
+class EncounterPanel extends AbstractPanel {
   /** Updates if an entity is in combat
    *
    * When an entity falls into an Encounter Panel, their status
@@ -17,7 +17,7 @@ class EncounterPanel extends abstractPanel {
    *
    * @param entity The entity involved in this combat
    */
-  def updateCombatStatus(entity: Entity): Unit = {
-    entity.inCombat = !entity.inCombat
+  private def updateCombatStatus(entity: Entity): Unit = {
+    entity.setCombatStatus(!entity.getCombatStatus)
   }
 }

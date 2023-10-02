@@ -16,13 +16,13 @@ import scala.collection.mutable.ArrayBuffer
   * @author [[https://github.com/r8vnhill Ignacio Slater M.]]
   * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
   */
-trait Panel {
+trait Panel extends PlayerCharacter {
   /** Array of the characters currently positioned on this panel.
     *
     * In the game, multiple characters might be on the same panel at once, e.g., if multiple players
     * land on the same space.
     */
-  val characters: ArrayBuffer[PlayerCharacter]
+  protected val characters: ArrayBuffer[PlayerCharacter]
 
   /** An array of panels that are directly connected to this one.
    *
@@ -31,7 +31,7 @@ trait Panel {
    *
    * @return a List of Panel instances that are adjacent or connected to this panel.
    */
-  var nextPanels: ArrayBuffer[Panel]
+  protected var nextPanels: ArrayBuffer[Panel]
 
   /** Adds a character to the list of characters currently on this panel.
     *
@@ -39,7 +39,7 @@ trait Panel {
     *
     * @param player The player character to add to this panel.
     */
-  def addCharacter(player: PlayerCharacter): Unit
+  protected def addCharacter(player: PlayerCharacter): Unit
 
   /** Removes a character from the list of characters currently on this panel.
     *
@@ -47,5 +47,5 @@ trait Panel {
     *
     * @param player The player character to remove from this panel.
     */
-  def removeCharacter(player: PlayerCharacter): Unit
+  protected def removeCharacter(player: PlayerCharacter): Unit
 }

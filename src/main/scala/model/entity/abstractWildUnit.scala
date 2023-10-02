@@ -14,15 +14,9 @@ abstract class abstractWildUnit extends Entity {
   /** maxHitPoints are 3 for all WildUnits */
   val maxHitPoints: Int = 3
 
-  /** It stars with maxHitPoints */
-  var currentHitPoints: Int = maxHitPoints;
-
-  /** All WildUnits start with 0 stars */
-  val stars: Int = 0
-
-  /** Their initial panel is unknown */
-  val currentPanel: Panel = null
+  /** Updates the initial hit points to be the maximum possible */
+  setCurrentHitPoints(maxHitPoints)
 
   /** Initially, WildUnits aren't in combat */
-  var inCombat: Boolean = false
+  setCombatStatus(false)
 }
