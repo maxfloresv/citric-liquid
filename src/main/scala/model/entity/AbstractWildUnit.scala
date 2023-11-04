@@ -7,16 +7,13 @@ import model.panel.Panel
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-abstract class abstractWildUnit extends Entity {
+abstract class AbstractWildUnit extends AbstractUnit {
   /** WildUnits aren't controllable */
-  val controllable: Boolean = false
+  val _controllable: Boolean = false
 
   /** maxHitPoints are 3 for all WildUnits */
-  val maxHitPoints: Int = 3
+  val _maxHitPoints: Int = 3
 
   /** Updates the initial hit points to be the maximum possible */
-  setCurrentHitPoints(maxHitPoints)
-
-  /** Initially, WildUnits aren't in combat */
-  setCombatStatus(false)
+  protected var _currentHitPoints: Int = maxHitPoints
 }

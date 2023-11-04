@@ -1,7 +1,7 @@
 package cl.uchile.dcc.citric
 package model.panel
 
-import model.entity.Entity
+import model.entity.{Entity, PlayerCharacter}
 
 /** Represents a specific single cell on a board, known as EncounterPanel.
  *
@@ -10,14 +10,17 @@ import model.entity.Entity
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 class EncounterPanel extends AbstractPanel {
+  /** WildUnit placed in this panel */
+  private val wildUnit: Entity = null
+
   /** Updates if an entity is in combat
    *
    * When an entity falls into an Encounter Panel, their status
    * of combat must change, also if they quit this type of panel.
    *
-   * @param entity The entity involved in this combat
+   * @param player The entity involved in this combat
    */
-  private def updateCombatStatus(entity: Entity): Unit = {
-    entity.setCombatStatus(!entity.getCombatStatus)
+  protected def apply(player: PlayerCharacter): Unit = {
+    player.inCombat_(!player.inCombat)
   }
 }

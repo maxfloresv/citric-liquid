@@ -7,8 +7,8 @@ package model.entity
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
-class Seagull extends abstractWildUnit {
-  val atkPoints: Int = 1
-  val defPoints: Int = -1
-  val evaPoints: Int = -1
+class Seagull extends AbstractWildUnit {
+  val _atkPoints: Int = 1
+  val _defPoints: Int = -1
+  val _evaPoints: Int = -1
 }

@@ -16,7 +16,7 @@ import scala.collection.mutable.ArrayBuffer
   * @author [[https://github.com/r8vnhill Ignacio Slater M.]]
   * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
   */
-trait Panel extends PlayerCharacter {
+trait Panel {
   /** Array of the characters currently positioned on this panel.
     *
     * In the game, multiple characters might be on the same panel at once, e.g., if multiple players
@@ -48,4 +48,10 @@ trait Panel extends PlayerCharacter {
     * @param player The player character to remove from this panel.
     */
   protected def removeCharacter(player: PlayerCharacter): Unit
+
+  /** Applies effects to a player when reaching a Panel.
+   *
+   * @param player The player affected.
+   */
+  protected def apply(player: PlayerCharacter): Unit
 }

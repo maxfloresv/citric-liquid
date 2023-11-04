@@ -1,8 +1,6 @@
 package cl.uchile.dcc.citric
 package model.entity
 
-import cl.uchile.dcc.citric.model.panel.Panel
-
 import scala.util.Random
 
 /** The `PlayerCharacter` class represents a character or avatar in the game, encapsulating
@@ -44,7 +42,7 @@ class PlayerCharacter(val name: String,
               val attack: Int,
               val defense: Int,
               val evasion: Int,
-              val randomNumberGenerator: Random = new Random()) extends Entity {
+              val randomNumberGenerator: Random = new Random()) extends AbstractUnit {
 
   /** Rolls a dice and returns a value between 1 to 6. */
   def rollDice(): Int = {
@@ -52,129 +50,125 @@ class PlayerCharacter(val name: String,
   }
 
   /** Initial norma for every PlayerCharacter is 1. */
-  private var norma: Int = 1
+  private var _norma: Int = 1
 
   /** Retrieves the Norma of a player.
    *
    * @return Current Norma for this player.
    */
-  def getNorma: Int = norma
+  def norma: Int = _norma
 
   /** Changes the player's Norma.
    *
    * @param newNorma Norma to be set.
    */
-  protected def setNorma(newNorma: Int): Unit = {
-    norma = newNorma
+  def norma_(newNorma: Int): Unit = {
+    _norma = newNorma
   }
 
   /** Number of games won are 0 by default. */
-  private var wins: Int = 0
+  private var _wins: Int = 0
 
   /** Retrieves the number of times the player has won.
    *
    * @return Number of wins for a player.
    */
-  def getWins: Int = wins
+  def wins: Int = _wins
 
   /** Changes the number of wins for a player.
    *
    * @param newWins Wins to be set.
    */
-  protected def setWins(newWins: Int): Unit = {
-    wins = newWins
+  def wins_(newWins: Int): Unit = {
+    _wins = newWins
   }
 
   /** Initially, the player can't be KO. */
-  private var isKO: Boolean = false
+  private var _isKO: Boolean = false
 
   /** Gets the current KO status for the player.
    *
    * @return Whether the player is in KO status or not.
    */
-  protected def getKOStatus: Boolean = isKO
+  def isKO: Boolean = _isKO
 
   /** Changes the KO status for a player.
    *
    * @param status True or False indicating the new KO status.
    */
-  protected def setKOStatus(status: Boolean): Unit = {
-    isKO = status
+  def isKO_(status: Boolean): Unit = {
+    _isKO = status
   }
 
   /** Initially, the player can't be in recovery state.
    * In this state, the player can't play its turn. */
-  private var inRecovery: Boolean = false
+  private var _inRecovery: Boolean = false
 
   /** Gets the recovery status for a player.
    *
    * @return Whether the player is in recovery status or not.
    */
-  protected def getRecoveryStatus: Boolean = inRecovery
+  def inRecovery: Boolean = _inRecovery
 
   /** Changes the recovery status for a player.
    *
    * @param recovery True or False indicating new recovery status.
    */
-  protected def setRecoveryStatus(recovery: Boolean): Unit = {
-    inRecovery = recovery
+  def inRecovery_(recovery: Boolean): Unit = {
+    _inRecovery = recovery
   }
 
   /** Objective can be either 'V' or 'S' which stands for victories
    * and stars respectively. It allows the player to Norma Check. */
-  private var objectiveChosen: Char = null
+  private var _objective: Char = '_'
 
   /** Retrieves the objective of a player.
    *
    * @return Current objective of this player.
    */
-  def getObjective: Char = objectiveChosen
+  def objective: Char = _objective
 
   /** Changes the current objective of this player.
    *
    * @param newObjective New objective to be set.
    */
-  protected def setObjective(newObjective: Char): Unit = {
+  def objective_(newObjective: Char): Unit = {
     if (newObjective != 'V' && newObjective != 'S') {
       throw new Exception("Objective is either V or S.")
     } else {
-      objectiveChosen = newObjective
+      _objective = newObjective
     }
   }
 
   /** A player can choose in each turn if they skip their
    * Home Panel or not. Default is true. */
-  private var skipHomePanel: Boolean = true
+  private var _skipHomePanel: Boolean = true
 
   /** Retrieves current Home Panel skip status for this player.
    *
    * @return True or False if this player decides whether to skip their home panel.
    */
-  protected def getSkipStatus: Boolean = skipHomePanel
+  def skipHomePanel: Boolean = _skipHomePanel
 
   /** Changes the current Home Panel skip status for a player.
    *
    * @param status New skip status to be set.
    */
-  protected def setSkipStatus(status: Boolean): Unit = {
-    skipHomePanel = status
+  def skipHomePanel_(status: Boolean): Unit = {
+    _skipHomePanel = status
   }
 
   /** ATK, DEF and EVA points are in the constructor. */
-  val atkPoints: Int = attack
-  val defPoints: Int = defense
-  val evaPoints: Int = evasion
+  val _atkPoints: Int = attack
+  val _defPoints: Int = defense
+  val _evaPoints: Int = evasion
 
   /** Max hit points for this player is in the constructor. */
-  val maxHitPoints: Int = maxHp
+  val _maxHitPoints: Int = maxHp
 
   /** Initial Hit Points are maximum possible. */
-  setCurrentHitPoints(maxHitPoints)
+  val _currentHitPoints: Int = _maxHitPoints
 
   /** PlayerCharacter are always controllable. */
-  val controllable: Boolean = true
-
-  /** Initially, players aren't in combat. They
-   * enter in combat iff they run into a Encounter Panel */
-  setCombatStatus(false)
+  val _controllable: Boolean = true
 }

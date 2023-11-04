@@ -29,14 +29,14 @@ class HomePanel extends AbstractPanel {
    */
   def getOwner: PlayerCharacter = owner
 
-  /** Gives HP to the current entity in this panel.
+  /** Gives 1 HP to the current entity in this panel.
    *
    * This might be invoked when a player moves off this panel.
    *
-   * @param entity The player character to remove from this panel.
+   * @param player The player character to remove from this panel.
    */
-  private def giveHp(entity: PlayerCharacter, n: Int): Unit = {
-    entity.setCurrentHitPoints(entity.getCurrentHitPoints + n)
+  protected def apply(player: PlayerCharacter): Unit = {
+    player.currentHitPoints_(player.currentHitPoints + 1)
   }
 
   /** Checks if a player meets Norma level-up requirements.
@@ -46,10 +46,10 @@ class HomePanel extends AbstractPanel {
    * @param character The player character to remove from this panel.
    */
   private def normaCheck(character: PlayerCharacter): Boolean = {
-    val norma = character.getNorma
-    val objectiveChosen = character.getObjective
-    val wins = character.getWins
-    val stars = character.getStars
+    val norma = character.norma
+    val objectiveChosen = character.objective
+    val wins = character.wins
+    val stars = character.stars
 
     if (norma == 2) {
       if (objectiveChosen == 'V')
@@ -90,6 +90,6 @@ class HomePanel extends AbstractPanel {
    * @param character The player character to remove from this panel.
    */
   private def updateNorma(character: PlayerCharacter): Unit = {
-    character.setNorma(character.getNorma + 1)
+    character.norma_(character.norma + 1)
   }
 }

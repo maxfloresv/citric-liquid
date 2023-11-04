@@ -10,14 +10,14 @@ import model.entity.PlayerCharacter
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 class BonusPanel extends AbstractPanel {
-  /** Update the stars of a character given that they fell into a
+  /** Updates the stars of a player given that they fell into a
    * Bonus Panel.
    *
-   * @param character The character involved
+   * @param player The player affected.
    */
-  private def giveStars(character: PlayerCharacter): Unit = {
-    val roll: Int = character.rollDice()
-    val toGive = math.min(roll * character.getNorma, roll * 3)
-    character.setStars(character.getStars + toGive)
+  protected def apply(player: PlayerCharacter): Unit = {
+    val roll: Int = player.rollDice()
+    val toGive = math.min(roll * player.norma, roll * 3)
+    player.stars_(player.stars + toGive)
   }
 }
