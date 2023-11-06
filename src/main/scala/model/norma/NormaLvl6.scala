@@ -6,7 +6,9 @@ package model.norma
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 class NormaLvl6 extends AbstractNorma {
-  protected val normaLevel: Int = 1
-  protected val victoriesNeeded: Int = 14
-  protected val starsNeeded: Int = 200
+  val normaLevel: Int = 6
+  /** This is the last norma. The requirements doesn't change. */
+  val victoriesNeeded: Int = 14
+  val starsNeeded: Int = 200
+  val nextNorma: Norma = null
 }

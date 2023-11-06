@@ -11,4 +11,6 @@ class RoboBall extends AbstractWildUnit {
   val _atkPoints: Int = -1
   val _defPoints: Int = 1
   val _evaPoints: Int = -1
+
+  def bonus(wildUnit: WildUnit): Int = wildUnit.bonusRoboBall(this)
 }

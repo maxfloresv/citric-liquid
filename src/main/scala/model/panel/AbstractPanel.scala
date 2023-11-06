@@ -13,20 +13,39 @@ import scala.collection.mutable.ArrayBuffer
  */
 abstract class AbstractPanel extends Panel {
   /** Initially, we don't have neither characters nor nextPanels. */
-  protected val characters: ArrayBuffer[PlayerCharacter] = ArrayBuffer()
-  protected var nextPanels: ArrayBuffer[Panel] = ArrayBuffer()
+  protected[model] val _characters: ArrayBuffer[PlayerCharacter] = ArrayBuffer()
+  protected[model] val _nextPanels: ArrayBuffer[Panel] = ArrayBuffer()
 
-  protected def addCharacter(player: PlayerCharacter): Unit = {
-    val listSize: Int = characters.size - 1
-    for (i <- 0 to listSize) {
-      if (characters(i) == player)
+  /** We return a copy of the main array for security reasons. Arrays are mutable */
+  protected[model] def characters: ArrayBuffer[PlayerCharacter] = {
+    val copyCharacters: ArrayBuffer[PlayerCharacter] = _characters.clone()
+    copyCharacters
+  }
+
+  protected[model] def nextPanels: ArrayBuffer[Panel] = {
+    val copyNextPanels: ArrayBuffer[Panel] = _nextPanels.clone()
+    copyNextPanels
+  }
+
+  protected[model] def addCharacter(player: PlayerCharacter): Unit = {
+    val listSize: Int = _characters.size
+    for (i <- 0 until listSize) {
+      if (_characters(i).name == player.name)
         return
     }
     // We only add players if they don't exist.
-    characters += player
+    _characters += player
   }
 
-  protected def removeCharacter(player: PlayerCharacter): Unit = {
-    characters -= player
+  protected[model] def removeCharacter(player: PlayerCharacter): Unit = {
+    _characters -= player
+  }
+
+  protected[model] def addNextPanel(panel: Panel): Unit = {
+    _nextPanels += panel
+  }
+
+  protected[model] def removeNextPanel(panel: Panel): Unit = {
+    _nextPanels -= panel
   }
 }

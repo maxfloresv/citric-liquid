@@ -1,69 +1,72 @@
 package cl.uchile.dcc.citric
 package model.entity
 
+import cl.uchile.dcc.citric.model.norma.{Norma, NormaLvl1}
+import cl.uchile.dcc.citric.model.objective.Objective
+
 import scala.util.Random
 
 /** The `PlayerCharacter` class represents a character or avatar in the game, encapsulating
-  * several attributes such as health points, attack strength, defense capability,
-  * and evasion skills. Each player has a unique name, and throughout the game,
-  * players can collect stars, roll dice, and progress in levels known as 'norma'.
-  * This class not only maintains the state of a player but also provides methods
-  * to modify and interact with these attributes.
-  *
-  * For instance, players can:
+ * several attributes such as health points, attack strength, defense capability,
+ * and evasion skills. Each player has a unique name, and throughout the game,
+ * players can collect stars, roll dice, and progress in levels known as 'norma'.
+ * This class not only maintains the state of a player but also provides methods
+ * to modify and interact with these attributes.
  *
-  * - Increase or decrease their star count.
+ * For instance, players can:
  *
-  * - Roll a dice, a common action in many board games.
+ * - Increase or decrease their star count.
  *
-  * - Advance their norma level.
-  *
-  * Furthermore, the `Player` class has a utility for generating random numbers,
-  * which is primarily used for simulating dice rolls. By default, this utility is
-  * an instance of the `Random` class but can be replaced if different random
-  * generation behaviors are desired.
-  *
-  * @param name The name of the player. This is an identifier and should be unique.
-  * @param maxHp The maximum health points a player can have. It represents the player's endurance.
-  * @param attack The player's capability to deal damage to opponents.
-  * @param defense The player's capability to resist or mitigate damage from opponents.
-  * @param evasion The player's skill to completely avoid certain attacks.
-  * @param randomNumberGenerator A utility to generate random numbers. Defaults to a new `Random`
-  *                              instance.
-  *
-  * @author [[https://github.com/danielRamirezL/ Daniel Ramírez L.]]
-  * @author [[https://github.com/joelriquelme/ Joel Riquelme P.]]
-  * @author [[https://github.com/r8vnhill/ Ignacio Slater M.]]
-  * @author [[https://github.com/Seivier/ Vicente González B.]]
-  * @author [[https://github.com/maxfloresv/ Máximo Flores Valenzuela]]
-  */
+ * - Roll a dice, a common action in many board games.
+ *
+ * - Advance their norma level.
+ *
+ * Furthermore, the `Player` class has a utility for generating random numbers,
+ * which is primarily used for simulating dice rolls. By default, this utility is
+ * an instance of the `Random` class but can be replaced if different random
+ * generation behaviors are desired.
+ *
+ * @param name The name of the player. This is an identifier and should be unique.
+ * @param maxHp The maximum health points a player can have. It represents the player's endurance.
+ * @param attack The player's capability to deal damage to opponents.
+ * @param defense The player's capability to resist or mitigate damage from opponents.
+ * @param evasion The player's skill to completely avoid certain attacks.
+ * @param randomNumberGenerator A utility to generate random numbers. Defaults to a new `Random`
+ *                              instance.
+ *
+ * @author [[https://github.com/danielRamirezL/ Daniel Ramírez L.]]
+ * @author [[https://github.com/joelriquelme/ Joel Riquelme P.]]
+ * @author [[https://github.com/r8vnhill/ Ignacio Slater M.]]
+ * @author [[https://github.com/Seivier/ Vicente González B.]]
+ * @author [[https://github.com/maxfloresv/ Máximo Flores Valenzuela]]
+ */
 class PlayerCharacter(val name: String,
-              val maxHp: Int,
-              val attack: Int,
-              val defense: Int,
-              val evasion: Int,
-              val randomNumberGenerator: Random = new Random()) extends AbstractUnit {
-
-  /** Rolls a dice and returns a value between 1 to 6. */
-  def rollDice(): Int = {
-    randomNumberGenerator.nextInt(6) + 1
-  }
+                      val maxHp: Int,
+                      val attack: Int,
+                      val defense: Int,
+                      val evasion: Int,
+                      val randomNumberGenerator: Random = new Random()) extends AbstractUnit {
 
   /** Initial norma for every PlayerCharacter is 1. */
-  private var _norma: Int = 1
+  private var _norma: Norma = new NormaLvl1()
 
   /** Retrieves the Norma of a player.
    *
    * @return Current Norma for this player.
    */
-  def norma: Int = _norma
+  def norma: Norma = _norma
 
   /** Changes the player's Norma.
    *
    * @param newNorma Norma to be set.
    */
-  def norma_(newNorma: Int): Unit = {
+  def normaClear(newNorma: Norma): Unit = {
     _norma = newNorma
+  }
+
+  /** We need to check if this player meets the criteria to Norma Clear */
+  def normaCheck(): Unit = {
+    objective.normaCheck(this)
   }
 
   /** Number of games won are 0 by default. */
@@ -118,26 +121,22 @@ class PlayerCharacter(val name: String,
     _inRecovery = recovery
   }
 
-  /** Objective can be either 'V' or 'S' which stands for victories
-   * and stars respectively. It allows the player to Norma Check. */
-  private var _objective: Char = '_'
+  /** Objective can be either wins or stars.
+   * It allows the player to Norma Check. */
+  private var _objective: Objective = _
 
   /** Retrieves the objective of a player.
    *
    * @return Current objective of this player.
    */
-  def objective: Char = _objective
+  def objective: Objective = _objective
 
   /** Changes the current objective of this player.
    *
    * @param newObjective New objective to be set.
    */
-  def objective_(newObjective: Char): Unit = {
-    if (newObjective != 'V' && newObjective != 'S') {
-      throw new Exception("Objective is either V or S.")
-    } else {
-      _objective = newObjective
-    }
+  def objective_(newObjective: Objective): Unit = {
+    _objective = newObjective
   }
 
   /** A player can choose in each turn if they skip their
@@ -167,8 +166,34 @@ class PlayerCharacter(val name: String,
   val _maxHitPoints: Int = maxHp
 
   /** Initial Hit Points are maximum possible. */
-  val _currentHitPoints: Int = _maxHitPoints
+  currentHitPoints_(_maxHitPoints)
 
   /** PlayerCharacter are always controllable. */
   val _controllable: Boolean = true
+
+  protected[model] def handleVictory(entity: Entity): Unit = {
+    entity.handleVictoryPlayer(this)
+  }
+
+  protected[model] def handleVictoryPlayer(player: PlayerCharacter): Unit = {
+    player.wins_(player.wins + 2)
+    /** We transfer from this entity (loser) half of their stars to the winner.
+     * By default, division in Scala is integer division. */
+    val halfStars = stars / 2
+    player.stars_(player.stars + halfStars)
+    stars_(stars - halfStars)
+
+    // Current player is now in KO & Recovery status
+    isKO_(true)
+    inRecovery_(true)
+  }
+
+  protected[model] def handleVictoryWildUnit(wildUnit: WildUnit): Unit = {
+    val halfStars = stars / 2
+    stars_(stars - halfStars)
+    wildUnit.stars_(wildUnit.stars + halfStars)
+
+    isKO_(true)
+    inRecovery_(true)
+  }
 }

@@ -15,9 +15,9 @@ class BonusPanel extends AbstractPanel {
    *
    * @param player The player affected.
    */
-  protected def apply(player: PlayerCharacter): Unit = {
-    val roll: Int = player.rollDice()
-    val toGive = math.min(roll * player.norma, roll * 3)
+  protected[model] def apply(player: PlayerCharacter): Unit = {
+    val roll: Int = player.generateRandomInt(6)
+    val toGive = math.min(roll * player.norma.normaLevel, roll * 3)
     player.stars_(player.stars + toGive)
   }
 }

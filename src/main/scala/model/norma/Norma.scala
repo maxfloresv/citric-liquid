@@ -3,6 +3,8 @@ package model.norma
 
 import model.entity.PlayerCharacter
 
+import cl.uchile.dcc.citric.model.objective.Objective
+
 /** Norma is the level system of the game. You can level up by completing
  * objectives such as victories or stars.
  *
@@ -10,20 +12,24 @@ import model.entity.PlayerCharacter
  */
 trait Norma {
   /** Identifies the Norma level to associate it with objectives */
-  protected val normaLevel: Int
+  val normaLevel: Int
   /** How many victories are needed to surpass this Norma level */
-  protected val victoriesNeeded: Int
+  val victoriesNeeded: Int
   /** How many stars are needed to surpass this Norma level */
-  protected val starsNeeded: Int
+  val starsNeeded: Int
 
-  /** When the player falls into a Home Panel (or pass if it's their own)
-   *  the game internally checks if they meet the objectives to level up.
-   *  This is called "Norma Check".
+  /** Norma Check by the objective Stars.
    *
-   *  This function updates the norma level of the player.
-   *
-   * @param character The character involved in this Norma Check.
-   * @return True or False indicating if they met the requirements.
+   * @param player The player which is in this process.
    */
-  protected def normaCheck(character: PlayerCharacter): Boolean
+  protected[model] def normaCheckStars(player: PlayerCharacter): Unit
+
+  /** Norma Check by the objective Wins.
+   *
+   * @param player The player which is in this process.
+   */
+  protected[model] def normaCheckWins(player: PlayerCharacter): Unit
+
+  /** Next Norma to each level */
+  val nextNorma: Norma
 }

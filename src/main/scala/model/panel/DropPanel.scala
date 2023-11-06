@@ -15,9 +15,9 @@ class DropPanel extends AbstractPanel {
    *
    * @param player The player affected.
    */
-  protected def apply(player: PlayerCharacter): Unit = {
-    val roll: Int = player.rollDice()
-    val taken: Int = roll * player.norma
+  protected[model] def apply(player: PlayerCharacter): Unit = {
+    val roll: Int = player.generateRandomInt(6)
+    val taken: Int = roll * player.norma.normaLevel
     player.stars_(player.stars - taken)
   }
 }
