@@ -43,6 +43,6 @@ class EncounterPanel extends AbstractPanel {
    * @param player The entity involved in this combat
    */
   protected[model] def apply(player: PlayerCharacter): Unit = {
-    player.inCombat_(!player.inCombat)
+    //player.inCombat_(!player.inCombat)
   }
 }

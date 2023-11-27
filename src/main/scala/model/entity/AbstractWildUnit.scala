@@ -6,6 +6,24 @@ package model.entity
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 abstract class AbstractWildUnit extends AbstractUnit with WildUnit {
+  /** Combats can take place in this game. We must save whether
+   * if an entity is in combat or not. */
+  protected var _inCombat: Boolean = false
+
+  /** Retrieves the current status of combat for this entity.
+   *
+   * @return True or False if this entity is in combat.
+   */
+  override protected[model] def inCombat(): Boolean = _inCombat
+
+  /** Changes current status of combat for this entity.
+   *
+   * @param status New status to be set.
+   */
+  protected[model] def inCombat_(status: Boolean): Unit = {
+    _inCombat = status
+  }
+
   /** WildUnits aren't controllable */
   val _controllable: Boolean = false
 

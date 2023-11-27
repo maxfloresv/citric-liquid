@@ -3,6 +3,7 @@ package model.entity
 
 import cl.uchile.dcc.citric.model.norma.{Norma, NormaLvl1}
 import cl.uchile.dcc.citric.model.objective.Objective
+import cl.uchile.dcc.citric.model.state.{State, PreGame}
 
 import scala.util.Random
 
@@ -47,7 +48,12 @@ class PlayerCharacter(val name: String,
                       val evasion: Int,
                       val randomNumberGenerator: Random = new Random()) extends AbstractUnit {
 
-  /** Initial norma for every PlayerCharacter is 1. */
+  /** Current state of this player. By default, they are in PreGame */
+  private var state: State = new PreGame()
+  // We set the state entity to be this player in this instance
+  state.setEntity(this)
+
+  /** Initial norma for every PlayerCharacter is 1 */
   private var _norma: Norma = new NormaLvl1()
 
   /** Retrieves the Norma of a player.
@@ -101,24 +107,6 @@ class PlayerCharacter(val name: String,
    */
   def isKO_(status: Boolean): Unit = {
     _isKO = status
-  }
-
-  /** Initially, the player can't be in recovery state.
-   * In this state, the player can't play its turn. */
-  private var _inRecovery: Boolean = false
-
-  /** Gets the recovery status for a player.
-   *
-   * @return Whether the player is in recovery status or not.
-   */
-  def inRecovery: Boolean = _inRecovery
-
-  /** Changes the recovery status for a player.
-   *
-   * @param recovery True or False indicating new recovery status.
-   */
-  def inRecovery_(recovery: Boolean): Unit = {
-    _inRecovery = recovery
   }
 
   /** Objective can be either wins or stars.
@@ -185,7 +173,6 @@ class PlayerCharacter(val name: String,
 
     // Current player is now in KO & Recovery status
     isKO_(true)
-    inRecovery_(true)
   }
 
   protected[model] def handleVictoryWildUnit(wildUnit: WildUnit): Unit = {
@@ -194,6 +181,41 @@ class PlayerCharacter(val name: String,
     wildUnit.stars_(wildUnit.stars + halfStars)
 
     isKO_(true)
-    inRecovery_(true)
+  }
+
+  protected[model] def inPreGame(): Boolean = state.inPreGame
+  protected[model] def inChapter(): Boolean = state.inChapter
+  override protected[model] def inCombat(): Boolean = state.inCombat
+  protected[model] def inRecovery(): Boolean = state.inRecovery
+  protected[model] def inMoving(): Boolean = state.inMoving
+  protected[model] def inWait(): Boolean = state.inWait
+  protected[model] def inPlayerTurn(): Boolean = state.inPlayerTurn
+  protected[model] def inEndGame(): Boolean = state.inEndGame
+  protected[model] def inLandingPanel(): Boolean = state.inLandingPanel
+
+  def choosePath(): Unit = state.choosePath()
+  def stopMovement(): Unit = state.stopMovement()
+  def outOfMovements(): Unit = state.outOfMovements()
+  def endCombat(): Unit = state.endCombat()
+  def rollDice(): Unit = state.rollDice()
+  def sufficientRoll(): Unit = state.sufficientRoll()
+  def insufficientRoll(): Unit = state.insufficientRoll()
+  def normaSixReached(): Unit = state.normaSixReached()
+  def newChapter(): Unit = state.newChapter()
+  def stateKO(): Unit = state.isKO()
+  def playTurn(): Unit = state.playTurn()
+  def stateAttack(): Unit = state.attack()
+  def stateEvade(): Unit = state.evade()
+  def stateDefend(): Unit = state.defend()
+  def doEffect(): Unit = state.doEffect()
+  def startGame(): Unit = state.startGame()
+
+  /** Set a new player/game status for this player.
+   *
+   * @param s The new state to be set.
+   */
+  protected[model] def setState(s: State): Unit = {
+    state = s
+    s.setEntity(this)
   }
 }

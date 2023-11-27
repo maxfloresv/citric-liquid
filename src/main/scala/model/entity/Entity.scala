@@ -107,19 +107,7 @@ trait Entity {
 
   /** Combats can take place in this game. We must save whether
    * if an entity is in combat or not. */
-  protected var _inCombat: Boolean = _
-
-  /** Retrieves the current status of combat for this entity.
-   *
-   * @return True or False if this entity is in combat.
-   */
-  def inCombat: Boolean
-
-  /** Changes current status of combat for this entity.
-   *
-   * @param status New status to be set.
-   */
-  def inCombat_(status: Boolean): Unit
+  protected[model] def inCombat(): Boolean
 
   /** Performs an attack in a combat.
    *

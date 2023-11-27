@@ -115,16 +115,19 @@ class EntitiesTest extends munit.FunSuite {
 
   /** Initially, none of the entities is in combat */
   test("Initial combat status must be set correctly") {
-    assertEquals(character.inCombat, false)
-    assertEquals(chicken.inCombat, false)
-    assertEquals(roboBall.inCombat, false)
-    assertEquals(seagull.inCombat, false)
+    assertEquals(character.inCombat(), false)
+    assertEquals(chicken.inCombat(), false)
+    assertEquals(roboBall.inCombat(), false)
+    assertEquals(seagull.inCombat(), false)
   }
 
   test("Setter for combat status must work correctly") {
-    character.inCombat_(true)
-    assertEquals(character.inCombat, true)
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.stopMovement()
+    assertEquals(character.inCombat(), true)
     chicken.inCombat_(true)
-    assertEquals(chicken.inCombat, true)
+    assertEquals(chicken.inCombat(), true)
   }
 }

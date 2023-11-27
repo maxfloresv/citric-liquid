@@ -3,8 +3,10 @@ package model
 
 import model.entity.{Chicken, PlayerCharacter}
 
+import cl.uchile.dcc.citric.exceptions.InvalidTransitionException
 import cl.uchile.dcc.citric.model.norma.{NormaLvl1, NormaLvl2, NormaLvl3, NormaLvl5}
 import cl.uchile.dcc.citric.model.objective.{Stars, Wins}
+import org.junit.Assert.assertThrows
 
 import scala.util.Random
 
@@ -96,12 +98,13 @@ class PlayerCharacterTest extends munit.FunSuite {
 
   /** Initial recovery status is false for every player */
   test("Initial recovery state for a player must be correct") {
-    assertEquals(character.inRecovery, false)
+    assertEquals(character.inRecovery(), false)
   }
 
   test("Setter for recovery state must work correctly") {
-    character.inRecovery_(true)
-    assertEquals(character.inRecovery, true)
+    character.startGame()
+    character.stateKO()
+    assertEquals(character.inRecovery(), true)
   }
 
   /** Initial objective for every player is unknown. Marked as null. */
@@ -132,7 +135,7 @@ class PlayerCharacterTest extends munit.FunSuite {
     // Attack mustn't throw an exception
     character.attack(chicken)
     // And it should change character's combat status to false
-    assertEquals(character.inCombat, false)
+    assertEquals(character.inCombat(), false)
   }
 
   test("Player vs. player victory should be handled correctly") {
@@ -157,6 +160,7 @@ class PlayerCharacterTest extends munit.FunSuite {
     val halfLoserStars = previousLoserStars / 2
 
     // We apply the handle (Double Dispatch)
+    // TODO: change with new State system
     character.handleVictory(secondCharacter)
 
     /** Loser gives half of their stars to the winner.
@@ -165,7 +169,7 @@ class PlayerCharacterTest extends munit.FunSuite {
     assertEquals(character.wins, previousWinnerWins + 2)
     assertEquals(secondCharacter.stars, previousLoserStars - halfLoserStars)
     assertEquals(secondCharacter.isKO, true)
-    assert(secondCharacter.inRecovery, true)
+    assert(secondCharacter.inRecovery(), true)
   }
 
   test("Norma Check method must work correctly") {
@@ -189,5 +193,136 @@ class PlayerCharacterTest extends munit.FunSuite {
     character.wins_(10)
     character.normaCheck()
     assert(character.norma.isInstanceOf[NormaLvl3])
+  }
+
+  test("Successful pregame status") {
+    assert(character.inPreGame())
+  }
+
+  test("Successful transition to chapter status") {
+    character.startGame()
+    assert(!character.inPreGame())
+    assert(character.inChapter())
+  }
+
+  test("newChapter transition doesn't affect current status") {
+    character.startGame()
+    character.newChapter()
+    assert(character.inChapter())
+  }
+
+  test("normaSixReached transition must end the game") {
+    character.startGame()
+    character.normaSixReached()
+    assert(character.inEndGame())
+  }
+
+  test("isKO transition must set recovery status to true") {
+    character.startGame()
+    character.stateKO()
+    assert(character.inRecovery())
+  }
+
+  test("playTurn transition must set playerTurn to true") {
+    character.startGame()
+    character.playTurn()
+    assert(character.inPlayerTurn())
+  }
+
+  test("insufficientRoll must throw back to chapter status") {
+    character.startGame()
+    character.stateKO()
+    character.insufficientRoll()
+    assert(character.inChapter())
+  }
+
+  test("sufficientRoll must transition to PlayerTurn event") {
+    character.startGame()
+    character.stateKO()
+    character.sufficientRoll()
+    assert(character.inPlayerTurn())
+  }
+
+  test("rollDice must transition to Moving state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    assert(character.inMoving())
+  }
+
+  test("choosePath must transition to Moving state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.choosePath()
+    assert(character.inMoving())
+  }
+
+  test("stopMovement must transition to Combat state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.stopMovement()
+    assert(character.inCombat())
+  }
+
+  test("outOfMovements must transition to Combat state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    assert(character.inCombat())
+  }
+
+  test("attack must transition to Wait state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    character.stateAttack()
+    assert(character.inWait())
+  }
+
+  test("evade must transition to Combat state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    character.stateAttack()
+    character.stateEvade()
+    assert(character.inCombat())
+  }
+
+  test("defend must transition to Combat state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    character.stateAttack()
+    character.stateDefend()
+    assert(character.inCombat())
+  }
+
+  test("endCombat must transition to LandingPanel state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    character.endCombat()
+    assert(character.inLandingPanel())
+  }
+
+  test("doEffect must transition to Chapter state") {
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.outOfMovements()
+    character.endCombat()
+    character.doEffect()
+    assert(character.inChapter())
+  }
+
+  test("doEffect transition mustn't occur in the start") {
+    assertThrows(classOf[InvalidTransitionException], () => character.doEffect())
   }
 }

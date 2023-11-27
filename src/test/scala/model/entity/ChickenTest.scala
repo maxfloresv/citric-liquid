@@ -68,7 +68,7 @@ class ChickenTest extends munit.FunSuite {
     assertEquals(previousChickenStars + halfPlayerStars, chicken.stars)
     // Now, player is in KO & recovery status, because they lost.
     assertEquals(character.isKO, true)
-    assertEquals(character.inRecovery, true)
+    assertEquals(character.inRecovery(), true)
   }
 
   test("Chicken must correctly response to an attack") {
@@ -119,11 +119,15 @@ class ChickenTest extends munit.FunSuite {
   test("If either a Chicken or an opponent isn't in combat, they can't attack") {
     val previousChickenHp = chicken.currentHitPoints
     chicken.inCombat_(true)
-    character.inCombat_(false)
+    // Character's default combat status is false
     character.attack(chicken)
     assertEquals(previousChickenHp, chicken.currentHitPoints)
 
-    character.inCombat_(true)
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.stopMovement()
+    // From now, character combat status is true
     chicken.inCombat_(false)
     character.attack(chicken)
     assertEquals(previousChickenHp, chicken.currentHitPoints)

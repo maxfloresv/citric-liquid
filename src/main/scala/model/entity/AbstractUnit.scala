@@ -35,18 +35,8 @@ abstract class AbstractUnit extends Entity {
     _currentPanel = panel
   }
 
-  def inCombat: Boolean = _inCombat
-
-  def inCombat_(status: Boolean): Unit = {
-    _inCombat = status
-  }
-
   /** Stars are 0 by default */
   stars_(0)
-
-  /** Initially, units aren't in combat. They
-   * enter in combat iff they run into a Encounter Panel */
-  inCombat_(false)
 
   def generateRandomInt(n: Int): Int = {
     val randomNumberGenerator: Random = new Random()
@@ -64,14 +54,11 @@ abstract class AbstractUnit extends Entity {
     } else {
       entity.handleVictory(this)
     }
-    // When response is received, the combat ends.
-    inCombat_(false)
-    entity.inCombat_(false)
   }
 
   def attack(entity: Entity): Unit = {
     // Combat can't occur if one of the entities isn't in combat.
-    if (!inCombat || !entity.inCombat) {
+    if (!inCombat() || !entity.inCombat()) {
       return
     }
 
