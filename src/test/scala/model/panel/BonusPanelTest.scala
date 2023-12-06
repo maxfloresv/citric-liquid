@@ -2,6 +2,9 @@ package cl.uchile.dcc.citric
 package model.panel
 
 import model.entity.PlayerCharacter
+
+import cl.uchile.dcc.citric.model.state.GameController
+
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
@@ -11,7 +14,7 @@ class BonusPanelTest extends munit.FunSuite {
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  private val randomNumberGenerator: Random = new Random(11)
+  private val ctx: GameController = new GameController()
 
   private var character: PlayerCharacter = _
   private var bonusPanel: BonusPanel = _
@@ -24,7 +27,7 @@ class BonusPanelTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     bonusPanel = new BonusPanel()
     dropPanel = new DropPanel()

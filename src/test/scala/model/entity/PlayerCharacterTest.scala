@@ -4,25 +4,22 @@ package model
 import model.entity.{Chicken, PlayerCharacter}
 
 import cl.uchile.dcc.citric.exceptions.InvalidTransitionException
-import cl.uchile.dcc.citric.model.norma.{NormaLvl1, NormaLvl2, NormaLvl3, NormaLvl5}
+import cl.uchile.dcc.citric.model.norma.{NormaLvl1, NormaLvl2, NormaLvl3, NormaLvl5, NormaLvl6}
 import cl.uchile.dcc.citric.model.objective.{Stars, Wins}
+import cl.uchile.dcc.citric.model.state.{EndGame, GameController}
 import org.junit.Assert.assertThrows
 
 import scala.util.Random
 
 class PlayerCharacterTest extends munit.FunSuite {
-  /*
-  REMEMBER: It is a good practice to use constants for the values that are used in multiple
-  tests, so you can change them in a single place.
-  This will make your tests more readable, easier to maintain, and less error-prone.
-  */
   private val name = "testPlayer"
   private val nameSecond = "testPlayer2"
   private val maxHp = 10
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  /* Add any other constants you need here... */
+
+  private var ctx: GameController = _
 
   /*
   This is the object under test.
@@ -34,17 +31,15 @@ class PlayerCharacterTest extends munit.FunSuite {
   private var secondCharacter: PlayerCharacter = _
   private var chicken: Chicken = _
 
-  // This method is executed before each `test(...)` method.
-  private var randomNumberGenerator: Random = _
   override def beforeEach(context: BeforeEach): Unit = {
-    randomNumberGenerator = new Random(11)
+    ctx = new GameController()
     character = new PlayerCharacter(
       name,
       maxHp,
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     chicken = new Chicken()
   }
@@ -57,9 +52,8 @@ class PlayerCharacterTest extends munit.FunSuite {
     assertEquals(character.evasion, evasion)
   }
 
-  // Two ways to test randomness (you can use any of them):
 
-  // 1. Test invariant properties, e.g. the result is always between 1 and 6.
+  // Test invariant properties, e.g. the result is always between 1 and 6.
   test("A character should be able to roll a dice") {
     for (_ <- 1 to 10) {
       assert(character.generateRandomInt(6) >= 1 && character.generateRandomInt(6) <= 6)
@@ -145,8 +139,19 @@ class PlayerCharacterTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
+
+    /** In order to handle combat, both players must be in combat status. */
+    character.startGame()
+    character.playTurn()
+    character.rollDice()
+    character.stopMovement()
+
+    secondCharacter.startGame()
+    secondCharacter.playTurn()
+    secondCharacter.rollDice()
+    secondCharacter.stopMovement()
 
     /** Previous setup of wins and stars */
     character.wins_(50)
@@ -160,7 +165,6 @@ class PlayerCharacterTest extends munit.FunSuite {
     val halfLoserStars = previousLoserStars / 2
 
     // We apply the handle (Double Dispatch)
-    // TODO: change with new State system
     character.handleVictory(secondCharacter)
 
     /** Loser gives half of their stars to the winner.
@@ -322,7 +326,55 @@ class PlayerCharacterTest extends munit.FunSuite {
     assert(character.inChapter())
   }
 
-  test("doEffect transition mustn't occur in the start") {
+  test("An invalid transition mustn't occur in the start") {
     assertThrows(classOf[InvalidTransitionException], () => character.doEffect())
+    assertThrows(classOf[InvalidTransitionException], () => character.newChapter())
+    assertThrows(classOf[InvalidTransitionException], () => character.normaSixReached())
+    assertThrows(classOf[InvalidTransitionException], () => character.stateKO())
+    assertThrows(classOf[InvalidTransitionException], () => character.insufficientRoll())
+    assertThrows(classOf[InvalidTransitionException], () => character.sufficientRoll())
+    assertThrows(classOf[InvalidTransitionException], () => character.playTurn())
+    assertThrows(classOf[InvalidTransitionException], () => character.rollDice())
+    assertThrows(classOf[InvalidTransitionException], () => character.choosePath())
+    assertThrows(classOf[InvalidTransitionException], () => character.stopMovement())
+    assertThrows(classOf[InvalidTransitionException], () => character.outOfMovements())
+    assertThrows(classOf[InvalidTransitionException], () => character.stateAttack())
+    assertThrows(classOf[InvalidTransitionException], () => character.stateDefend())
+    assertThrows(classOf[InvalidTransitionException], () => character.stateEvade())
+    assertThrows(classOf[InvalidTransitionException], () => character.endCombat())
+    assertThrows(classOf[InvalidTransitionException], () => character.recoveryCombat())
+
+    // StartGame transition test:
+    character.startGame()
+    // A player can't start when already started
+    assertThrows(classOf[InvalidTransitionException], () => character.startGame())
+  }
+
+  test("The player that won must be in combat status") {
+    intercept[Exception] {
+      secondCharacter = new PlayerCharacter(
+        nameSecond,
+        maxHp,
+        attack,
+        defense,
+        evasion,
+        ctx
+      )
+
+      character.startGame()
+      character.playTurn()
+      character.rollDice()
+      character.stopMovement()
+
+      // Second Character won, but they aren't in combat
+      secondCharacter.handleVictory(character)
+    }
+  }
+
+  test("Player must send a notification correctly to the Controller") {
+    character.addObserver(ctx)
+    character.normaClear(new NormaLvl6())
+    println(ctx.state)
+    assert(ctx.state.isInstanceOf[EndGame])
   }
 }

@@ -50,8 +50,13 @@ abstract class AbstractWildUnit extends AbstractUnit with WildUnit {
   }
 
   protected[model] def handleVictoryPlayer(player: PlayerCharacter): Unit = {
+    if (!player.inCombat())
+      throw new Exception("Player must be in combat in order to win.")
+
     val bonusStars = bonus(this)
     player.stars_(player.stars + stars + bonusStars)
     player.wins_(player.wins + 1)
+    // Player is no longer in combat
+    player.endCombat()
   }
 }

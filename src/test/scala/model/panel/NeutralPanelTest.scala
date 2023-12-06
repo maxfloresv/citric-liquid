@@ -3,6 +3,7 @@ package model.panel
 
 import cl.uchile.dcc.citric.model.entity.PlayerCharacter
 import cl.uchile.dcc.citric.model.panel.NeutralPanel
+import cl.uchile.dcc.citric.model.state.GameController
 
 import scala.util.Random
 
@@ -12,7 +13,7 @@ class NeutralPanelTest extends munit.FunSuite {
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  private val randomNumberGenerator: Random = new Random(11)
+  private val ctx: GameController = new GameController()
 
   private var character: PlayerCharacter = _
   private var neutralPanel: NeutralPanel = _
@@ -24,7 +25,7 @@ class NeutralPanelTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     neutralPanel = new NeutralPanel()
   }

@@ -4,6 +4,7 @@ package model.panel
 import model.entity.PlayerCharacter
 
 import cl.uchile.dcc.citric.model.panel.DropPanel
+import cl.uchile.dcc.citric.model.state.GameController
 
 import scala.util.Random
 
@@ -13,7 +14,7 @@ class DropPanelTest extends munit.FunSuite {
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  private val randomNumberGenerator: Random = new Random(11)
+  private val ctx: GameController = new GameController()
 
   private var character: PlayerCharacter = _
   private var dropPanel: DropPanel = _
@@ -25,7 +26,7 @@ class DropPanelTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     dropPanel = new DropPanel()
   }

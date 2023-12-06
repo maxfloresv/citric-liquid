@@ -1,9 +1,11 @@
 package cl.uchile.dcc.citric
 package model.entity
 
+import cl.uchile.dcc.citric.model.events.NormaClearEvent
 import cl.uchile.dcc.citric.model.norma.{Norma, NormaLvl1}
 import cl.uchile.dcc.citric.model.objective.Objective
-import cl.uchile.dcc.citric.model.state.{State, PreGame}
+import cl.uchile.dcc.citric.model.observer.AbstractSubject
+import cl.uchile.dcc.citric.model.state.{GameController, GameState, PreGame}
 
 import scala.util.Random
 
@@ -32,8 +34,7 @@ import scala.util.Random
  * @param attack The player's capability to deal damage to opponents.
  * @param defense The player's capability to resist or mitigate damage from opponents.
  * @param evasion The player's skill to completely avoid certain attacks.
- * @param randomNumberGenerator A utility to generate random numbers. Defaults to a new `Random`
- *                              instance.
+ * @param context The GameController associated to this entity.
  *
  * @author [[https://github.com/danielRamirezL/ Daniel Ramírez L.]]
  * @author [[https://github.com/joelriquelme/ Joel Riquelme P.]]
@@ -42,14 +43,15 @@ import scala.util.Random
  * @author [[https://github.com/maxfloresv/ Máximo Flores Valenzuela]]
  */
 class PlayerCharacter(val name: String,
-                      val maxHp: Int,
-                      val attack: Int,
-                      val defense: Int,
-                      val evasion: Int,
-                      val randomNumberGenerator: Random = new Random()) extends AbstractUnit {
+  val maxHp: Int,
+  val attack: Int,
+  val defense: Int,
+  val evasion: Int,
+  val context: GameController
+) extends AbstractUnit {
 
   /** Current state of this player. By default, they are in PreGame */
-  private var state: State = new PreGame()
+  private var state: GameState = new PreGame(context)
   // We set the state entity to be this player in this instance
   state.setEntity(this)
 
@@ -68,6 +70,7 @@ class PlayerCharacter(val name: String,
    */
   def normaClear(newNorma: Norma): Unit = {
     _norma = newNorma
+    notifyObservers(new NormaClearEvent(this))
   }
 
   /** We need to check if this player meets the criteria to Norma Clear */
@@ -164,6 +167,9 @@ class PlayerCharacter(val name: String,
   }
 
   protected[model] def handleVictoryPlayer(player: PlayerCharacter): Unit = {
+    if (!player.inCombat())
+      throw new Exception("Player can't win if it isn't in combat status.")
+
     player.wins_(player.wins + 2)
     /** We transfer from this entity (loser) half of their stars to the winner.
      * By default, division in Scala is integer division. */
@@ -173,14 +179,19 @@ class PlayerCharacter(val name: String,
 
     // Current player is now in KO & Recovery status
     isKO_(true)
+    this.recoveryCombat()
   }
 
   protected[model] def handleVictoryWildUnit(wildUnit: WildUnit): Unit = {
+    if (!wildUnit.inCombat())
+      throw new Exception("WildUnit can't win if they aren't in combat.")
+
     val halfStars = stars / 2
     stars_(stars - halfStars)
     wildUnit.stars_(wildUnit.stars + halfStars)
 
     isKO_(true)
+    this.recoveryCombat()
   }
 
   protected[model] def inPreGame(): Boolean = state.inPreGame
@@ -209,12 +220,13 @@ class PlayerCharacter(val name: String,
   def stateDefend(): Unit = state.defend()
   def doEffect(): Unit = state.doEffect()
   def startGame(): Unit = state.startGame()
+  def recoveryCombat(): Unit = state.recoveryCombat()
 
   /** Set a new player/game status for this player.
    *
    * @param s The new state to be set.
    */
-  protected[model] def setState(s: State): Unit = {
+  protected[model] def setState(s: GameState): Unit = {
     state = s
     s.setEntity(this)
   }

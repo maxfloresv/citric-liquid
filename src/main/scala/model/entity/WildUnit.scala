@@ -1,6 +1,11 @@
 package cl.uchile.dcc.citric
 package model.entity
 
+/** Represents a WildUnit. WildUnits are entities that appear in specific
+ * areas of the game, like encounter panels. They are not controllable.
+ *
+ * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
+ */
 trait WildUnit extends Entity {
   /** Each WildUnit give a star bonus when they die. This bonus has
    * to be sum to the player's stars.

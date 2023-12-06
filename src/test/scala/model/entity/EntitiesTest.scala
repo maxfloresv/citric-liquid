@@ -5,6 +5,7 @@ import scala.util.Random
 import model.entity.{Chicken, PlayerCharacter, RoboBall, Seagull}
 
 import cl.uchile.dcc.citric.model.panel.{EncounterPanel, HomePanel, Panel}
+import cl.uchile.dcc.citric.model.state.GameController
 
 class EntitiesTest extends munit.FunSuite {
   private val name = "testPlayer"
@@ -12,7 +13,7 @@ class EntitiesTest extends munit.FunSuite {
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  private val randomNumberGenerator = new Random(11)
+  private val ctx: GameController = new GameController()
 
   private var character: PlayerCharacter = _
   private var chicken: Chicken = _
@@ -26,7 +27,7 @@ class EntitiesTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     chicken = new Chicken()
     roboBall = new RoboBall()

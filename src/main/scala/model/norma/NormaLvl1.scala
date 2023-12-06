@@ -1,8 +1,6 @@
 package cl.uchile.dcc.citric
 package model.norma
 
-import model.entity.PlayerCharacter
-
 /** Describes Norma level 1.
  *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]

@@ -43,6 +43,11 @@ class EncounterPanel extends AbstractPanel {
    * @param player The entity involved in this combat
    */
   protected[model] def apply(player: PlayerCharacter): Unit = {
-    //player.inCombat_(!player.inCombat)
+    if (!player.inMoving())
+      throw new Exception("Can't transition to combat status w/WildUnit")
+
+    // Here, the player must combat with a WildUnit
+    player.outOfMovements()
+    // Now, the player is in combat status
   }
 }

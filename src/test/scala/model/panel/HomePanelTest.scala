@@ -2,7 +2,10 @@ package cl.uchile.dcc.citric
 package model.panel
 
 import cl.uchile.dcc.citric.model.entity.PlayerCharacter
+import cl.uchile.dcc.citric.model.norma.NormaLvl1
+import cl.uchile.dcc.citric.model.objective.Stars
 import cl.uchile.dcc.citric.model.panel.HomePanel
+import cl.uchile.dcc.citric.model.state.GameController
 
 import scala.util.Random
 
@@ -12,7 +15,7 @@ class HomePanelTest extends munit.FunSuite {
   private val attack = 1
   private val defense = 1
   private val evasion = 1
-  private val randomNumberGenerator: Random = new Random(11)
+  private val ctx: GameController = new GameController()
 
   private var character: PlayerCharacter = _
   private var homePanel: HomePanel = _
@@ -24,7 +27,7 @@ class HomePanelTest extends munit.FunSuite {
       attack,
       defense,
       evasion,
-      randomNumberGenerator
+      ctx
     )
     homePanel = new HomePanel(character)
   }
@@ -41,5 +44,12 @@ class HomePanelTest extends munit.FunSuite {
     homePanel.apply(character)
     // HP is always increased by 1
     assert(character.currentHitPoints == previousHp + 1)
+  }
+
+  test("Home Panel norma check must work correctly") {
+    character.objective_(new Stars())
+    homePanel.normaCheck(character)
+    // The player doesn't meet the criteria
+    assert(character.norma.isInstanceOf[NormaLvl1])
   }
 }

@@ -5,7 +5,8 @@ import model.entity.PlayerCharacter
 
 import cl.uchile.dcc.citric.model.objective.Objective
 
-/**
+/** Represents common functionalities and methods between normas.
+ *
  * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
  */
 abstract class AbstractNorma extends Norma {

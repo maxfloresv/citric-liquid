@@ -31,4 +31,12 @@ class HomePanel(_owner: PlayerCharacter) extends AbstractPanel {
   protected[model] def apply(player: PlayerCharacter): Unit = {
     player.currentHitPoints_(player.currentHitPoints + 1)
   }
+
+  /** Checks the norma requirements comparing the criteria chosen by the player.
+   *
+   * @param player The player to be checked.
+   */
+  protected[model] def normaCheck(player: PlayerCharacter): Unit = {
+    player.normaCheck()
+  }
 }

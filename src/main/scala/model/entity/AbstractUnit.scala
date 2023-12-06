@@ -3,9 +3,16 @@ package model.entity
 
 import model.panel.Panel
 
+import cl.uchile.dcc.citric.model.events.NormaClearEvent
+import cl.uchile.dcc.citric.model.observer.AbstractSubject
+
 import scala.util.Random
 
-abstract class AbstractUnit extends Entity {
+/** Represents common parameters and methods between Units
+ *
+ * @author [[https://github.com/maxfloresv Máximo Flores Valenzuela]]
+ */
+abstract class AbstractUnit extends AbstractSubject[NormaClearEvent] with Entity {
   def controllable: Boolean = _controllable
 
   def maxHitPoints: Int = _maxHitPoints
@@ -62,7 +69,7 @@ abstract class AbstractUnit extends Entity {
       return
     }
 
-    val rollAtk: Int = generateRandomInt(6)
+    // TODO implement attack
   }
 
   def defend(entity: Entity, rollAtk: Int): Unit = {
